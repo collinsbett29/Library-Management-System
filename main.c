@@ -1,153 +1,103 @@
-/*-----------------------------------
- Project:  Library Management System
- Author:   samuel wanyinge
- Date:     July, 2021
- Compiler: C99
- License:  MIT
------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <unistd.h>
-#include <curses.h>
-#include <errno.h>
-// Data structures
+/*
+Program: Library Management
+Author: CppBuzz
+Date: 17th Nov 2017
+*/
 
-struct user {
-    int id;
-    char name[100];
-    char tel[13];
-    int is_staff;
+#include<stdio.h>
+#include<curses.h>
+#include<stdlib.h>
+#include<string.h>
+
+struct library
+{
+char bk_name[30];
+char author[30];
+int pages;
+float price;
 };
-
-// function prototypes
-void execute_action(int action);
-void close(void);
-int menu();
-void add_user();
-void view_users();
 
 int main()
 {
-    int action;
-    printf("\tCounty Library Management System!\n");
-    printf("Welcome samuel\n");
-    // Navigation menu
-    do {
-        printf("1. Add user\n");
-        printf("2. Add Book\n");
-        printf("3. Exit\n");
-        printf("Select action(1-3): ");
-        scanf("%d",&action);
-        // validate input
-        if (action < 1 || action > 3)
-            printf("Invalid action. Try again\n");
-    } while(action < 1 || action > 3);
-    int action;
-    while(1) {
-        action = menu();
-        execute_action(action);
-        printf("Press any key to continue");
-        getchar();
-        getch();
-        system("cls");
-    }
+struct library l[100];
+char ar_nm[30],bk_nm[30];
+int i,j, keepcount;
+i=j=keepcount = 0;
 
-    return 0;
+while(j!=6)
+{
+printf("\n\n1. Add stuff\n2. view stuff\n");
+printf("\n\n3. Add book information\n4. Display book information\n");
+printf("5. List all books of given author\n");
+printf("6. List the title of specified book\n");
+printf("7. List the count of books in the library\n");
+printf("8. Exit");
+
+printf ("\n\nEnter one of the above : ");
+scanf("%d",&j);
+
+switch (j)
+{
+/* Add book */
+case 1:  
+
+printf ("Enter book name = ");
+scanf ("%s",l[i].bk_name);
+
+printf ("Enter author name = ");
+scanf ("%s",l[i].author);
+
+printf ("Enter pages = ");
+scanf ("%d",&l[i].pages);
+
+printf ("Enter price = ");
+scanf ("%f",&l[i].price);
+keepcount++;
+
+break;
+case 2:
+printf("you have entered the following information\n");
+for(i=0; i<keepcount; i++)
+{
+printf ("book name = %s",l[i].bk_name);
+
+printf ("\t author name = %s",l[i].author);
+
+printf ("\t  pages = %d",l[i].pages);
+
+printf ("\t  price = %f",l[i].price);
 }
+break;
 
-
-
-void execute_action(int action) {
-    switch (action) {
-    case 1:
-        add_user();
-        break;
-    case 2:
-        view_users();
-        break;
-    case 3:
-        printf("adding book\n");
-        break;
-    case 4:
-        close();
-        break;
-    default:
-        printf("Sorry. I don't know how to execute that\n");
-    }
-
+case 3:
+printf ("Enter author name : ");
+scanf ("%s",ar_nm);
+for (i=0; i<keepcount; i++)
+{
+if (strcmp(ar_nm, l[i].author) == 0)
+printf ("%s %s %d %f",l[i].bk_name,l[i].author,l[i].pages,l[i].price);
 }
+break;
 
-void close() {
-    printf("Thank for you using the system.");
-    Sleep(1);
-    exit(0);
+case 4:
+printf ("Enter book name : ");
+scanf ("%s",bk_nm);
+for (i=0; i<keepcount; i++)
+{
+if (strcmp(bk_nm, l[i].bk_name) == 0)
+printf ("%s \t %s \t %d \t %f",l[i].bk_name,l[i].author,l[i].pages,l[i].price);
 }
+break;
 
-int menu() {
-    int action;
-
-    do {
-        printf("\tCommunity Library System\n");
-        printf("Welcome Mr. samuel\n");
-        printf("1. Add user\n");
-        printf("2. View all users\n");
-        printf("3. Add book\n");
-        printf("4. Exit\n");
-        printf("Action(1-4): ");
-        scanf("%d",&action);
-        // validate
-        if (action < 1 || action > 4) {
-            printf("Invalid action.Try again\n");
-            Sleep(2000);
-            system("cls");
-        }
-    } while(action < 1 || action > 4);
-
-    return action;
-}
-
-void add_user() {
-    struct user u;
-    FILE *fp;
-
-    fp = fopen("users","ab");
-    if (!fp) {
-        printf("Unable to open file");
-        exit(0);
-    }
-
-    printf("Name: ");
-    getchar();
-    gets(u.name);
-    printf("Phone number: ");
-    scanf("%s",&u.tel);
-    printf("ID: ");
-    scanf("%d",&u.id);
-    printf("User type(1 for staff, 0 for ordinary user:");
-    scanf("%d",&u.is_staff);
-
-    fwrite(&u, sizeof(struct user), 1, fp);
-    printf("User added successfully\n");
-    fclose(fp);
+case 5:
+printf("\n No of books in library : %d", keepcount);
+break;
+case 6:
+exit (0); 
 
 }
+}
+return 0;
 
-void view_users() {
-    struct user u;
-    FILE *fp;
-
-    fp = fopen("users","rb");
-    if (!fp) {
-        printf("Unable to open file");
-        exit(0);
-    }
-    printf("id\t\tName\t\t\t\tPhone Number Is Staff\n");
-    while(!feof(fp)) {
-        fread(&u, sizeof(struct user), 1, fp);
-        printf("%8d %20s %13s %1d\n",u.id,u.name,u.tel,u.is_staff);
-    }
-    fclose(fp);
 }
